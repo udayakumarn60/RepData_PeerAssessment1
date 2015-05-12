@@ -1,22 +1,9 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
-
-
-## Loading and preprocessing the data
-
 ### Reading data
 Following code reads the activity.csv file into a data frame called ad.frame
 ```{r}
 ad.frame <- read.csv("activity.csv")
 summary(ad.frame)
 ```
-
-
-## What is mean total number of steps taken per day?
 
 ### Computing Total Steps Taken Each Day
 
@@ -36,14 +23,11 @@ mean1 <- mean(total.steps, na.rm=T)
 median1 <- median(total.steps, na.rm=T)
 ```
 
-### Reporting Mean and Median
+### Computing Mean and Median
 
 The mean value of total steps taken per day is `r mean1`  
 
 The median value of total steps taken per day is `r median1`  
-
-
-## What is the average daily activity pattern?
 
 ### Average daily activity pattern
 
@@ -65,26 +49,18 @@ Following code creates a time series plot of average daily activity pattern
 
 ```{r}
 plot(adap.data, type='l', xlab="Time interval", ylab="Average Steps Taken")
-
-## Code for computing the 5 minute interval
-interval <- match(max(adap.data), adap.data)
 ```
 
 ### Reporting The 5 Minute Interval At Which Maximum Step Average Is Found
 
 
-The `r match(max(adap.data), adap.data)`th time interval of the day contains the maximum number of steps
+The `r match(max(adap.data), adap.data)`th time interval contains the maximum number of steps
 
-
-## Imputing missing values
+### Imputing Missing Values
 
 ### Reporting The Total Number Of Missing Values In Data
 
-```{r}
-## Code for computing total number of missing values
-nmissing <- sum(is.na(ad.frame$steps))
-```
-The total number of missing values in the data is `r nmissing`
+The total number of missing values in the data is `r sum(is.na(ad.frame$steps))`
 
 ### Strategy For Removing Missing Values
 
@@ -124,8 +100,6 @@ After imputing the median value has changed by `r median2 - median1`
 The second histogram shows a shallower distribution compared to the first
 
 
-## Are there differences in activity patterns between weekdays and weekends?
-
 ### Computing weekdays and adding to the data set
 
 The following code uses the weekdays function to compute the days of the week after
@@ -162,12 +136,6 @@ par(mfrow=c(2,1))
 par(mar=c(0,0,0,0), oma = c(4,4,1,1))
 par(cex=0.6)
 par(tcl=-0.25)
-par(mgp=c(2,0.6,0))
-plot(final.data$interval, final.data$weekday,type='l', xaxt="n")
-mtext('weekday averages', side = 3, cex = 0.7, col = "blue")
-plot(final.data$interval, final.data$weekend,type='l')
-mtext('weekend averages', side = 3, cex = 0.7, col = "blue")
-mtext("Interval", side = 1, outer = TRUE, cex = 0.7, line = 2.2, col = "blue")
-mtext("Average No of Steps", side = 2, outer = TRUE, cex = 0.7, line = 2.2, col = "blue")
+plot(final.data$interval, final.data$weekday,type='l', main='weekday')
+plot(final.data$interval, final.data$weekend,type='l', main='weekend')
 ```
-

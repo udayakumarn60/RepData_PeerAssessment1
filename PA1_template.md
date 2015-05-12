@@ -1,18 +1,25 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
 
 ### Reading data
 Following code reads the activity.csv file into a data frame called ad.frame
-```{r}
+
+```r
 ad.frame <- read.csv("activity.csv")
 summary(ad.frame)
+```
+
+```
+##      steps                date          interval     
+##  Min.   :  0.00   2012-10-01:  288   Min.   :   0.0  
+##  1st Qu.:  0.00   2012-10-02:  288   1st Qu.: 588.8  
+##  Median :  0.00   2012-10-03:  288   Median :1177.5  
+##  Mean   : 37.38   2012-10-04:  288   Mean   :1177.5  
+##  3rd Qu.: 12.00   2012-10-05:  288   3rd Qu.:1766.2  
+##  Max.   :806.00   2012-10-06:  288   Max.   :2355.0  
+##  NA's   :2304     (Other)   :15840
 ```
 
 
@@ -22,7 +29,8 @@ summary(ad.frame)
 
 Following code computes the total number of steps taken each day. Ignoring the NA's for now
 
-```{r}
+
+```r
 total.steps <- tapply(ad.frame$steps, ad.frame$date, sum)
 ```
 
@@ -30,17 +38,23 @@ total.steps <- tapply(ad.frame$steps, ad.frame$date, sum)
 
 Following code plots histogram of total number of steps taken each day in 8 intervals
 
-```{r}
+
+```r
 hist(total.steps,8)
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
+
+```r
 mean1 <- mean(total.steps, na.rm=T)
 median1 <- median(total.steps, na.rm=T)
 ```
 
 ### Reporting Mean and Median
 
-The mean value of total steps taken per day is `r mean1`  
+The mean value of total steps taken per day is 1.0766189\times 10^{4}  
 
-The median value of total steps taken per day is `r median1`  
+The median value of total steps taken per day is 10765  
 
 
 ## What is the average daily activity pattern?
@@ -53,7 +67,8 @@ Following code is used to:
 2. Compute the mean at each interval using tapply and store in adap.data
 3. make the result as integer values as steps cannot be fraction. Coerce adap.data to integer
 
-```{r}
+
+```r
 nad.frame <- ad.frame[!is.na(ad.frame$steps),]
 adap.data <- tapply(nad.frame$steps, nad.frame$interval, mean)
 adap.data <- as.integer(adap.data)
@@ -63,9 +78,14 @@ adap.data <- as.integer(adap.data)
 
 Following code creates a time series plot of average daily activity pattern
 
-```{r}
-plot(adap.data, type='l', xlab="Time interval", ylab="Average Steps Taken")
 
+```r
+plot(adap.data, type='l', xlab="Time interval", ylab="Average Steps Taken")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
+
+```r
 ## Code for computing the 5 minute interval
 interval <- match(max(adap.data), adap.data)
 ```
@@ -73,18 +93,19 @@ interval <- match(max(adap.data), adap.data)
 ### Reporting The 5 Minute Interval At Which Maximum Step Average Is Found
 
 
-The `r match(max(adap.data), adap.data)`th time interval of the day contains the maximum number of steps
+The 104th time interval of the day contains the maximum number of steps
 
 
 ## Imputing missing values
 
 ### Reporting The Total Number Of Missing Values In Data
 
-```{r}
+
+```r
 ## Code for computing total number of missing values
 nmissing <- sum(is.na(ad.frame$steps))
 ```
-The total number of missing values in the data is `r nmissing`
+The total number of missing values in the data is 2304
 
 ### Strategy For Removing Missing Values
 
@@ -98,7 +119,8 @@ The following approach is used to impute missing values
 6. Recompute total steps each day using the tapply with the sum function
 7. Plot the histogram
 
-```{r}
+
+```r
 nad.frame <- ad.frame
 for (n in 1:nrow(nad.frame)) {
   if (is.na(nad.frame[n,]$steps)) {
@@ -108,18 +130,23 @@ for (n in 1:nrow(nad.frame)) {
 
 total.steps <- tapply(nad.frame$steps, nad.frame$date, sum)
 hist(total.steps,8)
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-7-1.png) 
+
+```r
 mean2 <- mean(total.steps)
 median2 <- median(total.steps)
 ```
 
 
-The mean value of total steps taken per day after imputing NA values is `r mean2`  
+The mean value of total steps taken per day after imputing NA values is 1.074977\times 10^{4}  
 
-The median value of total steps taken per day after imputing NA values is `r median2`  
+The median value of total steps taken per day after imputing NA values is 10641  
 
-After imputing the mean value has changed by `r mean2 - mean1`
+After imputing the mean value has changed by -16.4181874
 
-After imputing the median value has changed by `r median2 - median1`
+After imputing the median value has changed by -124
 
 The second histogram shows a shallower distribution compared to the first
 
@@ -131,7 +158,8 @@ The second histogram shows a shallower distribution compared to the first
 The following code uses the weekdays function to compute the days of the week after
 coercing the date column to date format. It then computes a factor vector which holds "weekday"" if the dayofweek is Monday through Friday and "weekend" otherwise
 
-```{r}
+
+```r
 nad.frame$date <- as.Date(nad.frame$date)
 dayofweek <- weekdays(nad.frame$date)
 wday <- factor(c("weekday","weekend"))
@@ -157,7 +185,8 @@ final.data$weekend <- as.numeric(weekend.averages)
 
 ### Creating A Panel Plot With Weekday/Weekend Averages
 
-```{r}
+
+```r
 par(mfrow=c(2,1))
 par(mar=c(0,0,0,0), oma = c(4,4,1,1))
 par(cex=0.6)
@@ -170,4 +199,6 @@ mtext('weekend averages', side = 3, cex = 0.7, col = "blue")
 mtext("Interval", side = 1, outer = TRUE, cex = 0.7, line = 2.2, col = "blue")
 mtext("Average No of Steps", side = 2, outer = TRUE, cex = 0.7, line = 2.2, col = "blue")
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-9-1.png) 
 
